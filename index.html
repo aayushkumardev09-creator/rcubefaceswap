@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RCUBEFACESWAP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="file"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .preview {
+            margin-top: 10px;
+            max-width: 100%;
+            max-height: 200px;
+            display: none;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .loading, .error, .result {
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+        }
+        .error {
+            color: red;
+        }
+        .result img {
+            max-width: 100%;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Face Swap</h1>
+        <form id="swapForm">
+            <div class="form-group">
+                <label for="source">Source Face Image:</label>
+                <input type="file" id="source" name="source" accept="image/*" required>
+                <img id="sourcePreview" class="preview" alt="Source preview">
+            </div>
+            <div class="form-group">
+                <label for="target">Target Image:</label>
+                <input type="file" id="target" name="target" accept="image/*" required>
+                <img id="targetPreview" class="preview" alt="Target preview">
+            </div>
+            <button type="submit" id="submitBtn">Swap Faces</button>
+        </form>
+        <div id="loading" class="loading">Processing... Please wait.</div>
+        <div id="error" class="error"></div>
+        <div id="result" class="result">
+            <h2>Result:</h2>
+            <img id="resultImage" alt="Swapped image">
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('swapForm');
+        const sourceInput = document.getElementById('source');
+        const targetInput = document.getElementById('target');
+        const sourcePreview = document.getElementById('sourcePreview');
+        const targetPreview = document.getElementById('targetPreview');
+        const submitBtn = document.getElementById('submitBtn');
+        const loading = document.getElementById('loading');
+        const error = document.getElementById('error');
+        const result = document.getElementById('result');
+        const resultImage = document.getElementById('resultImage');
+
+        // Preview images on file select
+        sourceInput.addEventListener('change', (e) => {
+            showPreview(e.target, sourcePreview);
+        });
+        targetInput.addEventListener('change', (e) => {
+            showPreview(e.target, targetPreview);
+        });
+
+        function showPreview(input, preview) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.style.display = 'none';
+            }
+        }
+
+        // Handle form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideMessages();
+            loading.style.display = 'block';
+            submitBtn.disabled = true;
+
+            const formData = new FormData();
+            formData.append('source', sourceInput.files[0]);
+            formData.append('target', targetInput.files[0]);
+
+            try {
+                const response = await fetch('/swap', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Face swap failed');
+                }
+
+                if (data.success) {
+                    resultImage.src = data.image_url;
+                    result.style.display = 'block';
+                } else {
+                    throw new Error(data.error || 'Face swap failed');
+                }
+            } catch (err) {
+                error.textContent = err.message;
+                error.style.display = 'block';
+            } finally {
+                loading.style.display = 'none';
+                submitBtn.disabled = false;
+            }
+        });
+
+        function hideMessages() {
+            loading.style.display = 'none';
+            error.style.display = 'none';
+            result.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
