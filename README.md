@@ -4,7 +4,6 @@
 
 ![Face Swap API](https://img.shields.io/badge/API-FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
 ![AI Models](https://img.shields.io/badge/AI-InsightFace-FF4B4B?style=for-the-badge&logo=python&logoColor=white)
-![Frontend](https://img.shields.io/badge/Frontend-Vanilla_JS-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 
 Welcome to **RCUBEFACESWAP** — an elegant and fully functional AI application that allows you to swap faces between a source image and a target image in seconds. This repository serves as a creative showcase of bridging state-of-the-art deep learning (`InsightFace`/`ONNX`) with a blazing-fast backend (`FastAPI`) and a clean, responsive frontend.
 
