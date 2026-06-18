@@ -1,6 +1,6 @@
 # 🎭 RCUBEFACESWAP
 
-> Seamless, high-performance, and API-driven Face Swapping powered by InsightFace and FastAPI.
+> Seamless, high-performance, and API-driven Enhanced Face Swapping powered by InsightFace and FastAPI.
 
 ![Face Swap API](https://img.shields.io/badge/API-FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
 ![AI Models](https://img.shields.io/badge/AI-InsightFace-FF4B4B?style=for-the-badge&logo=python&logoColor=white)
